@@ -25,3 +25,28 @@
    ```bash
    git clone https://github.com/albionaleka/DijkstraAlgorithm.git
    cd DijkstraAlgorithm
+
+2. **Create and activate a virtual environment (optional)**
+
+    ```bash
+    python -m venv venv
+    source venv/bin/activate
+
+3. **Install depencencies**
+    ```bash
+    pip install -r requirements.txt
+
+## Usage
+
+Launch the app with:
+
+    ```bash
+    python gui.py
+    ```
+
+Once the GUI is open, you can:
+
+- 🟡 Click to add nodes on the canvas
+- 🔗 Connect nodes to form edges and input their weights
+- 🧭 Choose start and end nodes to calculate the shortest path
+- 🌐 View the computed shortest path highlighted in the graph
