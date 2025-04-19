@@ -103,7 +103,7 @@ class App(ctk.CTk):
 
     def add_node(self):
         self.error.configure(text="Warnings: ")
-        node_name = self.node_entry.get()
+        node_name = self.node_entry.get().upper()
         if node_name:
             self.graph.add_node(node_name)
             self.node_entry.delete(0, ctk.END)
@@ -114,8 +114,8 @@ class App(ctk.CTk):
 
     def add_edge(self):
         self.error.configure(text="Warnings: ")
-        node1 = self.node1_entry.get()
-        node2 = self.node2_entry.get()
+        node1 = self.node1_entry.get().upper()
+        node2 = self.node2_entry.get().upper()
         weight_str = self.weight_entry.get()
 
         if node1 and node2 and weight_str:
@@ -144,8 +144,8 @@ class App(ctk.CTk):
 
     def add_bidirectional_edge(self):
         self.error.configure(text="Warnings: ")
-        node1 = self.node1_entry.get()
-        node2 = self.node2_entry.get()
+        node1 = self.node1_entry.get().upper()
+        node2 = self.node2_entry.get().upper()
         weight_str = self.weight_entry.get()
 
         if node1 and node2 and weight_str:
@@ -236,8 +236,8 @@ class App(ctk.CTk):
 
     def run_dijkstra(self):
         self.cleanup_animation()
-        start_node = self.start.get()
-        end_node = self.end.get()
+        start_node = self.start.get().upper()
+        end_node = self.end.get().upper()
 
         if not start_node or not end_node:
             self.error.configure(text="Warnings: Please enter start and end nodes.")
@@ -316,8 +316,8 @@ class App(ctk.CTk):
             return
 
         self.cleanup_animation()
-        start_node = self.start.get()
-        end_node = self.end.get()
+        start_node = self.start.get().upper()
+        end_node = self.end.get().upper()
 
         if not start_node or not end_node:
             self.error.configure(text="Warnings: Please enter start and end nodes.")
