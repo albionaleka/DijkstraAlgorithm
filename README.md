@@ -1,4 +1,4 @@
-# DijkstraAlgorithm
+# Dijkstra Algorithm
 
 ## Overview
 
