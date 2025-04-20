@@ -20,7 +20,7 @@ class App(ctk.CTk):
         self.resizable(False, False)
 
         self.graph = nx.MultiDiGraph()
-        self.animation_after_id = None  # Initialize animation timer ID
+        self.animation_after_id = None
 
         self.frame = ctk.CTkScrollableFrame(self, width=200, height=600)
         self.frame.grid(row=0, column=0)
@@ -88,7 +88,7 @@ class App(ctk.CTk):
         self.graph_label = ctk.CTkLabel(self.main_frame, text="Graph Information 📈", width=700, font=("Verdana", 20), text_color="white")
         self.graph_label.grid(row=0, column=0, padx=10, pady=10, columnspan=4)
 
-        self.error = ctk.CTkLabel(self.main_frame, text="Warnings: ", font=("Verdana", 14), text_color="#ff2828")
+        self.error = ctk.CTkLabel(self.main_frame, text="Warnings: ", font=("Verdana", 14), text_color="white")
         self.error.grid(row=1, column=0, padx=15, pady=10, columnspan=4, sticky="w")
 
         self.graph_frame = ctk.CTkFrame(master=self.main_frame, height=350, width=700, corner_radius=20, fg_color="#191d20")
@@ -105,7 +105,7 @@ class App(ctk.CTk):
         self.graph_image.pack(padx=20)
 
     def add_node(self):
-        self.error.configure(text="Warnings: ")
+        self.error.configure(text="Warnings: ", text_color="white")
         node_name = self.node_entry.get().upper()
         if node_name:
             self.graph.add_node(node_name)
@@ -113,10 +113,10 @@ class App(ctk.CTk):
 
             self.update_graph_display()
         else:
-            self.error.configure(text="Warnings: Please enter a node name")
+            self.error.configure(text="Warnings: Please enter a node name", text_color="#ff2828")
 
     def add_edge(self):
-        self.error.configure(text="Warnings: ")
+        self.error.configure(text="Warnings: ", text_color="white")
         node1 = self.node1_entry.get().upper()
         node2 = self.node2_entry.get().upper()
         weight_str = self.weight_entry.get()
@@ -131,7 +131,7 @@ class App(ctk.CTk):
                 return
 
             if node1 not in self.graph.nodes or node2 not in self.graph.nodes:
-                self.error.configure(text="Warnings: Add both nodes to the graph first")
+                self.error.configure(text="Warnings: Add both nodes to the graph first", text_color="#ff2828")
                 return
 
             self.graph.add_edge(node1, node2, weight=weight)
@@ -142,11 +142,11 @@ class App(ctk.CTk):
 
             self.update_graph_display()
         else:
-            self.error.configure(text="Warnings: Please fill all fields")
+            self.error.configure(text="Warnings: Please fill all fields", text_color="#ff2828")
             return
 
     def add_bidirectional_edge(self):
-        self.error.configure(text="Warnings: ")
+        self.error.configure(text="Warnings: ", text_color="white")
         node1 = self.node1_entry.get().upper()
         node2 = self.node2_entry.get().upper()
         weight_str = self.weight_entry.get()
@@ -157,11 +157,11 @@ class App(ctk.CTk):
                 if weight <= 0:
                     raise ValueError("Weight must be positive")
             except ValueError as e:
-                self.error.configure(text=f"Warnings: {e}")
+                self.error.configure(text=f"Warnings: {e}", text_color="#ff2828")
                 return
 
             if node1 not in self.graph.nodes or node2 not in self.graph.nodes:
-                self.error.configure(text="Warnings: Add both nodes to the graph first")
+                self.error.configure(text="Warnings: Add both nodes to the graph first", text_color="#ff2828")
                 return
 
             self.graph.add_edge(node1, node2, weight=weight)
@@ -173,7 +173,7 @@ class App(ctk.CTk):
 
             self.update_graph_display()
         else:
-            self.error.configure(text="Warnings: Please fill all fields")
+            self.error.configure(text="Warnings: Please fill all fields", text_color="#ff2828")
             return
 
     def update_graph_display(self):
@@ -185,7 +185,7 @@ class App(ctk.CTk):
                 for _, data in edges.items():
                     neighbor_weights.append(f"{neighbor}({data.get('weight', 1)})")
             display_text += ", ".join(neighbor_weights) + "\n\n"
-        self.graph_display.configure(text=display_text if display_text else "The graph is empty")
+        self.graph_display.configure(text=display_text if len(display_text) > 0 else "The graph is empty")
 
     def div(self):
         self.divide = ctk.CTkLabel(self.frame, text="-----------------")
@@ -200,7 +200,8 @@ class App(ctk.CTk):
         
         self.cleanup_animation()
 
-        self.error.configure(text="Warnings: You have reset the graph. Please add new nodes and edges!")
+        self.error.configure(text="Warnings: You have reset the graph. Please add new nodes and edges!", text_color="green")
+        self.result.configure(text="")
 
     def cleanup_animation(self):
         if hasattr(self, 'animation_after_id') and self.animation_after_id is not None:
@@ -209,7 +210,7 @@ class App(ctk.CTk):
 
     def draw(self):
         if not self.graph.nodes:
-            self.error.configure(text="Warnings: The graph is empty. Add nodes and edges to visualize.")
+            self.error.configure(text="Warnings: The graph is empty. Add nodes and edges to visualize.", text_color="#ff2828")
             return
 
         self.cleanup_animation()
@@ -254,11 +255,11 @@ class App(ctk.CTk):
         end_node = self.end.get().upper()
 
         if not start_node or not end_node:
-            self.error.configure(text="Warnings: Please enter start and end nodes.")
+            self.error.configure(text="Warnings: Please enter start and end nodes.", text_color="#ff2828")
             return
 
         if start_node not in self.graph.nodes or end_node not in self.graph.nodes:
-            self.error.configure(text="Warnings: Start or end node does not exist in the graph.")
+            self.error.configure(text="Warnings: Start or end node does not exist in the graph.", text_color="#ff2828")
             return
 
         distances, previous_nodes = self.dijkstra_algorithm(start_node)
@@ -322,11 +323,11 @@ class App(ctk.CTk):
             self.graph_image_label.image = ctk_image
             self.graph_image_label.pack(pady=10)
         else:
-            self.result.configure(text="No path found between the specified nodes.")
+            self.result.configure(text="No path found between the specified nodes.", text_color="#ff2828")
 
     def animate_dijkstra(self):
         if not self.graph.nodes:
-            self.error.configure(text="Warnings: The graph is empty. Add nodes and edges to visualize.")
+            self.error.configure(text="Warnings: The graph is empty. Add nodes and edges to visualize.", text_color="#ff2828")
             return
 
         self.cleanup_animation()
@@ -334,11 +335,11 @@ class App(ctk.CTk):
         end_node = self.end.get().upper()
 
         if not start_node or not end_node:
-            self.error.configure(text="Warnings: Please enter start and end nodes.")
+            self.error.configure(text="Warnings: Please enter start and end nodes.", text_color="#ff2828")
             return
 
         if start_node not in self.graph.nodes or end_node not in self.graph.nodes:
-            self.error.configure(text="Warnings: Start or end node does not exist in the graph.")
+            self.error.configure(text="Warnings: Start or end node does not exist in the graph.", text_color="#ff2828")
             return
 
         distances, previous_nodes = self.dijkstra_algorithm(start_node)
@@ -346,7 +347,7 @@ class App(ctk.CTk):
         self.shortest_path = path
 
         if not path:
-            self.result.configure(text="No path found between the specified nodes.")
+            self.result.configure(text="No path found between the specified nodes.", text_color="#ff2828")
             return
 
         shortest_distance = distances.get(end_node, float('inf'))
@@ -407,7 +408,7 @@ class App(ctk.CTk):
                     )
             
             ax.axis('off')
-            return ax,
+            return ax
 
         anim = animation.FuncAnimation(fig, update, frames=len(path)+1, interval=2500, blit=False)
         anim.save('animation.gif', writer='pillow')
