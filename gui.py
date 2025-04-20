@@ -25,7 +25,7 @@ class App(ctk.CTk):
         self.frame = ctk.CTkScrollableFrame(self, width=200, height=600)
         self.frame.grid(row=0, column=0)
 
-        self.node_label = ctk.CTkLabel(self.frame, text="Add Node 📍", font=("Verdana", 14), text_color="white")
+        self.node_label = ctk.CTkLabel(self.frame, text="Add Vertex 📍", font=("Verdana", 14), text_color="white")
         self.node_label.pack(padx=10, pady=10)
 
         self.node_entry = ctk.CTkEntry(self.frame, placeholder_text="Node Name")
@@ -73,6 +73,9 @@ class App(ctk.CTk):
 
         self.animate_button = ctk.CTkButton(self.frame, text="Animate Path", command=self.animate_dijkstra)
         self.animate_button.pack(padx=10, pady=5)
+
+        self.reset = ctk.CTkButton(self.frame, text="Reset", command=self.reset)
+        self.reset.pack(padx=10, pady=5)
 
         self.div()
 
@@ -187,6 +190,17 @@ class App(ctk.CTk):
     def div(self):
         self.divide = ctk.CTkLabel(self.frame, text="-----------------")
         self.divide.pack(padx=10, pady=10)
+
+    def reset(self):
+        self.graph.clear()
+        self.update_graph_display()
+        
+        if hasattr(self, 'graph_image_label'):
+            self.graph_image_label.destroy()
+        
+        self.cleanup_animation()
+
+        self.error.configure(text="Warnings: You have reset the graph. Please add new nodes and edges!")
 
     def cleanup_animation(self):
         if hasattr(self, 'animation_after_id') and self.animation_after_id is not None:
