@@ -74,9 +74,6 @@ class App(ctk.CTk):
         self.animate_button = ctk.CTkButton(self.frame, text="Animate Path", command=self.animate_dijkstra)
         self.animate_button.pack(padx=10, pady=5)
 
-        self.find_all_paths_button = ctk.CTkButton(self.frame, text="Find All Nodes Path", command=self.find_path_through_all_nodes)
-        self.find_all_paths_button.pack(padx=10, pady=5)
-
         self.reset = ctk.CTkButton(self.frame, text="Reset", command=self.reset)
         self.reset.pack(padx=10, pady=5)
 
@@ -531,122 +528,6 @@ class App(ctk.CTk):
         if path and path[0] == start_node and path[-1] == end_node:
             return path
         return []
-
-    def find_path_through_all_nodes(self):
-        if not self.graph.nodes:
-            self.error.configure(text="Warnings: The graph is empty. Add nodes and edges to visualize.", text_color="#ff2828")
-            return
-
-        self.cleanup_animation()
-        
-        nodes = list(self.graph.nodes())
-        if not nodes:
-            self.error.configure(text="Warnings: No nodes in the graph.", text_color="#ff2828")
-            return
-
-        all_paths = {}
-        total_distance = 0
-        current_path = []
-
-        start_node = nodes[0]
-        current_node = start_node
-        unvisited = set(nodes[1:])
-        visited = {start_node}
-        
-        while unvisited:
-            distances, previous_nodes = self.dijkstra_algorithm(current_node)
-            
-            min_distance = float('inf')
-            next_node = None
-            
-            for node in unvisited:
-                if distances[node] < min_distance:
-                    min_distance = distances[node]
-                    next_node = node
-            
-            if next_node is None:
-                self.error.configure(text="Warnings: Cannot reach all nodes. Graph might be disconnected.", text_color="#ff2828")
-                return
-            
-            path = self.get_shortest_path(previous_nodes, current_node, next_node)
-            if not path:
-                self.error.configure(text="Warnings: Cannot find path between nodes.", text_color="#ff2828")
-                return
-
-            for node in path[1:]:
-                if node not in visited:
-                    current_path.append(node)
-                    visited.add(node)
-            
-            total_distance += min_distance
-            current_node = next_node
-            unvisited.remove(next_node)
-
-        distances, previous_nodes = self.dijkstra_algorithm(current_node)
-        path_to_start = self.get_shortest_path(previous_nodes, current_node, start_node)
-        if path_to_start:
-            for node in path_to_start[1:]:
-                if node not in visited:
-                    current_path.append(node)
-                    visited.add(node)
-            total_distance += distances[start_node]
-
-        final_path = current_path
-        
-        self.result.configure(text=f"Path through all nodes: {' ➡ '.join(final_path)}\nTotal Distance: {total_distance}")
-        
-        pos = nx.spring_layout(self.graph)
-        plt.figure(figsize=(8, 6))
-        
-        nx.draw_networkx_nodes(self.graph, pos, node_color='lightgray', node_size=2000)
-        nx.draw_networkx_labels(self.graph, pos, font_size=10, font_weight='bold')
-        
-        nx.draw_networkx_edges(
-            self.graph,
-            pos,
-            edge_color='lightgray',
-            width=1,
-            arrows=True,
-            arrowsize=20,
-            node_size=2000,
-            connectionstyle='arc3, rad=0.1'
-        )
-        
-        edge_labels = {(u, v): d['weight'] for u, v, d in self.graph.edges(data=True)}
-        nx.draw_networkx_edge_labels(self.graph, pos, edge_labels=edge_labels, font_size=8)
-        
-        path_edges = list(zip(final_path[:-1], final_path[1:]))
-        if path_edges:
-            nx.draw_networkx_nodes(self.graph, pos, 
-                                 nodelist=final_path,
-                                 node_color='skyblue',
-                                 node_size=2000)
-            
-            nx.draw_networkx_edges(
-                self.graph,
-                pos,
-                edgelist=path_edges,
-                edge_color='red',
-                width=3,
-                arrows=True,
-                arrowsize=20,
-                node_size=2000,
-                connectionstyle='arc3, rad=0.1'
-            )
-        
-        plt.axis('off')
-        plt.tight_layout()
-        plt.savefig("graph.png")
-        plt.close()
-        
-        image = Image.open("graph.png")
-        ctk_image = ctk.CTkImage(light_image=image, dark_image=image, size=(600, 400))
-        
-        if hasattr(self, 'graph_image_label'):
-            self.graph_image_label.destroy()
-        self.graph_image_label = ctk.CTkLabel(self.graph_frame, image=ctk_image, text="")
-        self.graph_image_label.image = ctk_image
-        self.graph_image_label.pack(pady=10)
 
 app = App()
 app.mainloop()
